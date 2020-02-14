@@ -4,7 +4,7 @@ import xlsxwriter
 
 path = 'D:/Data/CSV/'
 startNumber = 1
-endNumber = 2
+endNumber = 150
 head = ['DATE', 'LATITUDE', 'LONGITUDE', 'DEPTH', 'PRS', 'TMP']
 workbook = xlsxwriter.Workbook(path + 'new_data.xlsx')
 sheet = workbook.add_worksheet('data')
@@ -23,16 +23,16 @@ if __name__ == '__main__':
                     tmp += 1
                     if j[0] != 'END_DATA':
                         if tmp == 11:
-                            dataList[0] = j[0].replace('DATE = ', '')
+                            dataList[0] = int(j[0].replace('DATE = ', ''))
                         elif tmp == 13:
-                            dataList[1] = j[0].replace('LATITUDE = ', '')
+                            dataList[1] = float(j[0].replace('LATITUDE = ', ''))
                         elif tmp == 14:
-                            dataList[2] = j[0].replace('LONGITUDE = ', '')
+                            dataList[2] = float(j[0].replace('LONGITUDE = ', ''))
                         elif tmp == 15:
-                            dataList[3] = j[0].replace('DEPTH = ', '')
+                            dataList[3] = float(j[0].replace('DEPTH = ', ''))
                         elif tmp > 17:
-                            dataList[4] = j[0]
-                            dataList[5] = j[2]
+                            dataList[4] = float(j[0])
+                            dataList[5] = float(j[2])
                             count += 1
                             sheet.write_row('A' + str(count), dataList)
             else:
