@@ -1,24 +1,27 @@
 import os
 import csv
 import xlsxwriter
+import time
 
 path = 'D:/Data/CSV/'
 startNumber = 1
 endNumber = 150
 head = ['DATE', 'LATITUDE', 'LONGITUDE', 'DEPTH', 'PRS', 'TMP']
-workbook = xlsxwriter.Workbook(path + 'new_data.xlsx')
+filename = '1-3'
+workbook = xlsxwriter.Workbook(path + filename +'.xlsx')
 sheet = workbook.add_worksheet('data')
 
 if __name__ == '__main__':
     if os.path.exists(path):
         sheet.write_row('A1', head)
+        count = 1
         for i in range(startNumber, endNumber):
-            name = path + 'data_from_SeaDataNet_North-Sea_TS_QCed_V1.1_' + '%03d' % i + '_ct1.csv'
+            name = path + filename + '_%03d' % i + '_ct1.csv'
             if os.path.exists(name):
                 data = csv.reader(open(name))
                 dataList = [0, 0, 0, 0, 0, 0]
+                cash = dataList.copy()
                 tmp = 0
-                count = 1
                 for j in data:
                     tmp += 1
                     if j[0] != 'END_DATA':
@@ -29,12 +32,18 @@ if __name__ == '__main__':
                         elif tmp == 14:
                             dataList[2] = float(j[0].replace('LONGITUDE = ', ''))
                         elif tmp == 15:
-                            dataList[3] = float(j[0].replace('DEPTH = ', ''))
+                            t = j[0].replace('DEPTH = ', '')
+                            if t != '':
+                                dataList[3] = float(t)
+                            else:
+                                dataList[3] = -99.0
                         elif tmp > 17:
                             dataList[4] = float(j[0])
                             dataList[5] = float(j[2])
-                            count += 1
-                            sheet.write_row('A' + str(count), dataList)
+                            if cash != dataList:
+                                count += 1
+                                sheet.write_row('A' + str(count), dataList)
+                                cash = dataList.copy()
             else:
                 print('Not found \"' + name + '\"')
     else:
