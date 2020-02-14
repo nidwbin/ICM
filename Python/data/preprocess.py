@@ -1,7 +1,6 @@
 import os
 import csv
 import xlsxwriter
-import time
 
 path = 'D:/Data/CSV/'
 startNumber = 1
